@@ -51,6 +51,7 @@ def test_author_can_edit_comment(
     comment.refresh_from_db()
     assert comment.text == form_data['text']
 
+
 def test_author_can_delete_comment(
         author_client, pk_from_news, pk_from_comment):
     url = reverse('news:delete', args=pk_from_comment)
