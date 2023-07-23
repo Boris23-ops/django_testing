@@ -43,7 +43,7 @@ def comment(author, news):
 
 @pytest.fixture
 def pk_from_comment(comment):
-    return comment.pk,
+    return comment.pk
 
 
 @pytest.fixture

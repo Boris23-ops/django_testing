@@ -14,7 +14,6 @@ from pytest_django.asserts import assertRedirects
      ('news:detail', pytest.lazy_fixture('pk_from_news')),),
 )
 
-
 @pytest.mark.django_db
 def test_pages_availability_for_anonymous_user(client, page, args):
     url = reverse(page, args=args)
