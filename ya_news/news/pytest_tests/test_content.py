@@ -45,5 +45,6 @@ def test_comments_order(client, pk_from_news):
     object_list = res.context['news'].comment_set.all()
     sorted_list_of_comments = sorted(object_list,
                                      key=lambda comment: comment.created)
-    for original_comment, sorted_comment in zip(object_list, sorted_list_of_comments):
+    for original_comment, sorted_comment in zip(object_list, 
+                                                sorted_list_of_comments):
         assert original_comment.created == sorted_comment.created
