@@ -11,7 +11,7 @@ class TestContent(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.author = User.objects.create(username='Лев Толстой')
+        cls.author = User.objects.create(username='Борис')
         cls.reader = User.objects.create(username='Читатель простой')
         cls.note = Note.objects.create(
             title='Заголовок',
