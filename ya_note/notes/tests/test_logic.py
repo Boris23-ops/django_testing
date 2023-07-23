@@ -18,8 +18,8 @@ class TestNoteCreation(TestCase):
     def setUpTestData(self):
         self.author = User.objects.create(username='Борис')
         self.form_data = {'title': 'Form title',
-                         'text': 'Form text',
-                         'slug': 'form-slug'}
+                          'text': 'Form text',
+                          'slug': 'form-slug'}
 
     @staticmethod
     def _get_err_msg(current, expected):
