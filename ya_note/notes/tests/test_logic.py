@@ -15,9 +15,9 @@ class TestNoteCreation(TestCase):
     ADD_NOTE_URL = reverse('notes:add')
 
     @classmethod
-    def setUpTestData(cls):
-        cls.author = User.objects.create(username='Борис')
-        cls.form_data = {'title': 'Form title',
+    def setUpTestData(self):
+        self.author = User.objects.create(username='Борис')
+        self.form_data = {'title': 'Form title',
                          'text': 'Form text',
                          'slug': 'form-slug'}
 
