@@ -11,10 +11,7 @@ def test_news_count(client):
     res = client.get(url)
     object_list = res.context['object_list']
     comments_count = len(object_list)
-    msg = ('На главной странице должно находиться не больше '
-           f'{settings.NEWS_COUNT_ON_HOME_PAGE} новостей,'
-           f' выведено {comments_count}')
-    assert comments_count == settings.NEWS_COUNT_ON_HOME_PAGE, msg
+    assert comments_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
 @pytest.mark.parametrize(
@@ -38,10 +35,7 @@ def test_news_order(client):
                                  key=lambda news: news.date,
                                  reverse=True)
     for as_is, to_be in zip(object_list, sorted_list_of_news):
-        assert as_is.date == to_be.date, ('Должна быть первой в списке'
-                                          f' новость "{to_be.title}" с датой'
-                                          f' {to_be.date}, получена'
-                                          f' "{as_is.title}" {as_is.date}')
+        assert as_is.date == to_be.date
 
 
 @pytest.mark.usefixtures('make_bulk_of_comments')
@@ -52,7 +46,4 @@ def test_comments_order(client, pk_from_news):
     sorted_list_of_comments = sorted(object_list,
                                      key=lambda comment: comment.created)
     for as_is, to_be in zip(object_list, sorted_list_of_comments):
-        msg = (
-            f'Первым в списке должен быть комментарий "{to_be.text}" с датой'
-            f' {to_be.created}, получен "{as_is.text}" {as_is.created}')
-        assert as_is.created == to_be.created, msg
+        assert as_is.created == to_be.created

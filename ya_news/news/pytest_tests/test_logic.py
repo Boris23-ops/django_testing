@@ -35,7 +35,7 @@ def test_user_can_create_comment(
 
 
 def test_user_cant_use_bad_words(admin_client, pk_from_news):
-    bad_words_data = {'text': choice(BAD_WORDS)}
+    bad_words_data = {'text': f'Какой-то text, {choice(BAD_WORDS)}, еще text'}
     url = reverse('news:detail', args=pk_from_news)
     response = admin_client.post(url, data=bad_words_data)
     assertFormError(response, form='form', field='text', errors=WARNING)
@@ -51,7 +51,6 @@ def test_author_can_edit_comment(
     comment.refresh_from_db()
     assert comment.text == form_data['text']
 
-
 def test_author_can_delete_comment(
         author_client, pk_from_news, pk_from_comment):
     url = reverse('news:delete', args=pk_from_comment)
@@ -62,16 +61,17 @@ def test_author_can_delete_comment(
 
 
 def test_other_user_cant_edit_comment(
-        admin_client, comment, form_data):
+        admin_client, pk_from_news, comment, form_data):
     url = reverse('news:edit', args=[comment.pk])
+    old_comment = comment.text
     response = admin_client.post(url, data=form_data)
     assert response.status_code == HTTPStatus.NOT_FOUND
     comment.refresh_from_db()
-    assert comment.text == comment.text
+    assert comment.text == old_comment
 
 
 def test_other_user_cant_delete_comment(
-        admin_client, pk_from_comment):
+        admin_client, pk_from_news, pk_from_comment):
     url = reverse('news:delete', args=pk_from_comment)
     response = admin_client.post(url)
     assert response.status_code == HTTPStatus.NOT_FOUND
