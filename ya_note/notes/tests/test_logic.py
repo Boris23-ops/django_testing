@@ -24,15 +24,17 @@ class TestNoteCreation(TestCase):
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
         cls.form_data = {'title': 'Form title',
-                          'text': 'Form text',
-                          'slug': 'form-slug'}
+                         'text': 'Form text',
+                         'slug': 'form-slug'}
 
     @staticmethod
     def _get_err_msg(current, expected):
         return f'Текущее значение "{current}", Ожидалось "{expected}"'
 
     def test_user_can_create_note(self):
-        response = self.author_client.post(self.ADD_NOTE_URL, data=self.form_data)
+        response = self.author_client.post(
+            self.ADD_NOTE_URL,data=self.form_data
+        )
         self.assertRedirects(response, ADD_NOTE_SUCCESS)
         expected_notes_count = 1
         current_notes_count = Note.objects.count()
@@ -65,8 +67,9 @@ class TestNoteCreation(TestCase):
 
     def test_empty_slug(self):
         del self.form_data['slug']
-        res = self.author_client.post(self.ADD_NOTE_URL,
-                               data=self.form_data)
+        res = self.author_client.post(
+            self.ADD_NOTE_URL, data=self.form_data
+        )
         self.assertRedirects(res, ADD_NOTE_SUCCESS)
         expected_notes_count = 1
         current_notes_count = Note.objects.count()
