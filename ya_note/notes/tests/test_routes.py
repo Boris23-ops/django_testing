@@ -58,8 +58,7 @@ class TestRoutes(TestCase):
         for user, status in users_statuses:
             for page in ('notes:detail', 'notes:edit', 'notes:delete'):
                 with self.subTest(user=user, page=page):
-                    url = reverse(page, args=[self.note.slug])
-                    response = user.get(url)
+                    response = user.get(reverse(page, args=[self.note.slug]))
                     self.assertEqual(response.status_code, status)
 
     def test_redirect_for_anonymous_client(self):

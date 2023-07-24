@@ -46,6 +46,6 @@ class TestContent(TestCase):
         for page, args in urls:
             with self.subTest(page=page):
                 url = reverse(page, args=args)
-                self.client.force_login(self.author)
-                response = self.client.get(url)
+                response = self.author_client.get(url)
                 self.assertIsInstance(response.context['form'], NoteForm)
+                self.assertIn('form', response.context)

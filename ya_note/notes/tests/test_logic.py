@@ -9,15 +9,21 @@ from notes.models import Note
 from notes.forms import WARNING
 
 User = get_user_model()
+ADD_NOTE_SUCCESS = reverse('notes:success')
 
 
 class TestNoteCreation(TestCase):
     ADD_NOTE_URL = reverse('notes:add')
 
     @classmethod
-    def setUpTestData(self):
-        self.author = User.objects.create(username='Борис')
-        self.form_data = {'title': 'Form title',
+    def setUpTestData(cls):
+        cls.author = User.objects.create(username='Борис')
+        cls.reader = User.objects.create(username='Читатель простой')
+        cls.author_client = Client()
+        cls.author_client.force_login(cls.author)
+        cls.reader_client = Client()
+        cls.reader_client.force_login(cls.reader)
+        cls.form_data = {'title': 'Form title',
                           'text': 'Form text',
                           'slug': 'form-slug'}
 
@@ -26,9 +32,8 @@ class TestNoteCreation(TestCase):
         return f'Текущее значение "{current}", Ожидалось "{expected}"'
 
     def test_user_can_create_note(self):
-        self.client.force_login(self.author)
-        response = self.client.post(self.ADD_NOTE_URL, data=self.form_data)
-        self.assertRedirects(response, reverse('notes:success'))
+        response = self.author_client.post(self.ADD_NOTE_URL, data=self.form_data)
+        self.assertRedirects(response, ADD_NOTE_SUCCESS)
         expected_notes_count = 1
         current_notes_count = Note.objects.count()
         self.assertEqual(current_notes_count, expected_notes_count,
@@ -53,18 +58,16 @@ class TestNoteCreation(TestCase):
                                            expected_notes_count))
 
     def test_slug_must_be_unique(self):
-        self.client.force_login(self.author)
-        self.client.post(self.ADD_NOTE_URL, data=self.form_data)
-        res = self.client.post(self.ADD_NOTE_URL, data=self.form_data)
+        self.author_client.post(self.ADD_NOTE_URL, data=self.form_data)
+        res = self.author_client.post(self.ADD_NOTE_URL, data=self.form_data)
         warn = self.form_data['slug'] + WARNING
         self.assertFormError(res, form='form', field='slug', errors=warn)
 
     def test_empty_slug(self):
-        self.client.force_login(self.author)
         del self.form_data['slug']
-        res = self.client.post(self.ADD_NOTE_URL,
+        res = self.author_client.post(self.ADD_NOTE_URL,
                                data=self.form_data)
-        self.assertRedirects(res, reverse('notes:success'))
+        self.assertRedirects(res, ADD_NOTE_SUCCESS)
         expected_notes_count = 1
         current_notes_count = Note.objects.count()
         self.assertEqual(current_notes_count, expected_notes_count,
@@ -120,7 +123,7 @@ class TestNoteEditDelete(TestCase):
 
     def test_author_can_delete_note(self):
         res = self.author_client.post(self.delete_note_url)
-        self.assertRedirects(res, reverse('notes:success'))
+        self.assertRedirects(res, ADD_NOTE_SUCCESS)
         self.assertEqual(Note.objects.count(), 0)
 
     def test_other_user_cant_delete_note(self):
