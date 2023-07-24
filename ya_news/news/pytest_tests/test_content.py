@@ -28,8 +28,7 @@ def test_comment_form_availability_for_different_users(
 
 
 def test_news_order(client):
-    url = reverse('news:home')
-    res = client.get(url)
+    res = client.get(reverse('news:home'))
     object_list = res.context['object_list']
     sorted_list_of_news = sorted(object_list,
                                  key=lambda news: news.date,
@@ -40,8 +39,7 @@ def test_news_order(client):
 
 @pytest.mark.usefixtures('make_bulk_of_comments')
 def test_comments_order(client, pk_from_news):
-    url = reverse('news:detail', args=pk_from_news)
-    res = client.get(url)
+    res = client.get(reverse('news:detail', args=pk_from_news))
     object_list = res.context['news'].comment_set.all()
     sorted_list_of_comments = sorted(object_list,
                                      key=lambda comment: comment.created)
