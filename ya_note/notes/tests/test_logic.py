@@ -33,7 +33,7 @@ class TestNoteCreation(TestCase):
 
     def test_user_can_create_note(self):
         response = self.author_client.post(
-            self.ADD_NOTE_URL,data=self.form_data
+            self.ADD_NOTE_URL, data=self.form_data
         )
         self.assertRedirects(response, ADD_NOTE_SUCCESS)
         expected_notes_count = 1
